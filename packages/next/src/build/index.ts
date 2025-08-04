@@ -1235,22 +1235,15 @@ export default async function build(
 
         await nextBuildSpan
           .traceChild('copy-metadata-static-files')
-          .traceAsyncFn(() => {
-            console.log({
+          .traceAsyncFn(() =>
+            copyMetadataStaticFiles({
               appDir,
               pagesType: PAGE_TYPES.APP,
               pagePaths: appPaths,
               distDir,
               pageExtensions: config.pageExtensions,
             })
-            return copyMetadataStaticFiles({
-              appDir,
-              pagesType: PAGE_TYPES.APP,
-              pagePaths: appPaths,
-              distDir,
-              pageExtensions: config.pageExtensions,
-            })
-          })
+          )
 
         NextBuildContext.mappedAppPages = mappedAppPages
       }
