@@ -312,7 +312,6 @@ impl Asset for ServerNftJsonAsset {
                     })
                     .try_join()
                     .await?;
-            server_output_assets.sort();
 
             // if is_standalone && !is_minimal {
             //     server_output_assets.extend(
@@ -365,6 +364,12 @@ impl Asset for ServerNftJsonAsset {
                     }
                 }
             }
+
+            server_output_assets.sort();
+            // Dedupe as some entries may be duplicates: a file might be referenced multiple times,
+            // e.g. as a RawModule (from an FS operation) and as an EcmascriptModuleAsset because it
+            // was required.
+            server_output_assets.dedup();
 
             let json = json!({
               "version": 1,
