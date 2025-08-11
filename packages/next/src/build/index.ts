@@ -1217,7 +1217,6 @@ export default async function build(
               pageExtensions: config.pageExtensions,
               pagesDir,
               appDir,
-              isExportMode: config.output === 'export',
             })
           )
 
