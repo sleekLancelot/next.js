@@ -781,5 +781,6 @@
   "780": "Invariant: failed to find parent dynamic route for notFound route %s",
   "781": "No LRU node to remove",
   "782": "Failed to find the root directory of the project. This is a bug in Next.js.",
-  "783": "\\`experimental.clientParamParsing\\` can not be \\`true\\` when \\`experimental.clientSegmentCache\\` is \\`false\\`. Client param parsing is only relevant when client segment cache is enabled."
+  "783": "\\`experimental.clientParamParsing\\` can not be \\`true\\` when \\`experimental.clientSegmentCache\\` is \\`false\\`. Client param parsing is only relevant when client segment cache is enabled.",
+  "784": "Unexpected dynamic param type: %s"
 }

@@ -19,6 +19,8 @@ import { collectRootParamKeys } from '../../build/segment-config/app/collect-roo
 import { buildAppStaticPaths } from '../../build/static-paths/app'
 import { buildPagesStaticPaths } from '../../build/static-paths/pages'
 import { createIncrementalCache } from '../../export/helpers/create-incremental-cache'
+import type { AppPageRouteModule } from '../route-modules/app-page/module'
+import type { AppRouteRouteModule } from '../route-modules/app-route/module'
 
 type RuntimeConfig = {
   pprConfig: ExperimentalPPRConfig | undefined
@@ -107,7 +109,11 @@ export async function loadStaticPaths({
   })
 
   if (isAppPath) {
-    const segments = await collectSegments(components)
+    const segments = await collectSegments(
+      // We know this is an app page or app route module because we checked
+      // above that the page type is 'app'.
+      components.routeModule as AppPageRouteModule | AppRouteRouteModule
+    )
 
     const isRoutePPREnabled =
       isAppPageRouteModule(components.routeModule) &&

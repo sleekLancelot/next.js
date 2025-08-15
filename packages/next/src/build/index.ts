@@ -140,7 +140,7 @@ import {
   collectMeta,
 } from './utils'
 import type { PageInfo, PageInfos } from './utils'
-import type { PrerenderedRoute } from './static-paths/types'
+import type { FallbackRouteParam, PrerenderedRoute } from './static-paths/types'
 import type { AppSegmentConfig } from './segment-config/app/app-segment-config'
 import { writeBuildId } from './write-build-id'
 import { normalizeLocalePath } from '../shared/lib/i18n/normalize-locale-path'
@@ -319,6 +319,12 @@ export interface DynamicPrerenderManifestRoute {
    * The root params that are unknown for this fallback route.
    */
   fallbackRootParams: readonly string[] | undefined
+
+  /**
+   * The fallback route params for this route that were parsed from the loader
+   * tree.
+   */
+  fallbackRouteParams: readonly FallbackRouteParam[] | undefined
 
   /**
    * The source route that this fallback route is based on. This is a reference
@@ -3100,7 +3106,12 @@ export default async function build(
             for (const prerenderedRoute of prerenderedRoutes) {
               if (
                 prerenderedRoute.fallbackRouteParams &&
-                prerenderedRoute.fallbackRouteParams.length > 0
+                prerenderedRoute.fallbackRouteParams.length > 0 &&
+                // If all the fallback route params are parallel route params,
+                // then we still consider it a known route.
+                !prerenderedRoute.fallbackRouteParams.every(
+                  (param) => param.isParallelRouteParam
+                )
               ) {
                 unsortedUnknownPrerenderRoutes.push(prerenderedRoute)
               } else {
@@ -3126,7 +3137,12 @@ export default async function build(
               if (
                 isRoutePPREnabled &&
                 prerenderedRoute.fallbackRouteParams &&
-                prerenderedRoute.fallbackRouteParams.length > 0
+                prerenderedRoute.fallbackRouteParams.length > 0 &&
+                // If all the fallback route params are parallel route params,
+                // then we still consider it a static route.
+                !prerenderedRoute.fallbackRouteParams.every(
+                  (param) => param.isParallelRouteParam
+                )
               ) {
                 // If the route has unknown params, then we need to add it to
                 // the list of dynamic routes.
@@ -3432,9 +3448,17 @@ export default async function build(
                   fallbackRootParams: fallback
                     ? route.fallbackRootParams
                     : undefined,
-                  fallbackSourceRoute: route.fallbackRouteParams?.length
-                    ? page
-                    : undefined,
+                  fallbackSourceRoute:
+                    route.fallbackRouteParams &&
+                    route.fallbackRouteParams.length > 0 &&
+                    // If all the fallback route params are parallel route
+                    // params, then we still consider it a static route.
+                    !route.fallbackRouteParams.every(
+                      (param) => param.isParallelRouteParam
+                    )
+                      ? page
+                      : undefined,
+                  fallbackRouteParams: route.fallbackRouteParams,
                   dataRouteRegex: !dataRoute
                     ? null
                     : normalizeRouteRegex(
@@ -3901,6 +3925,7 @@ export default async function build(
             fallbackExpire: undefined,
             fallbackSourceRoute: undefined,
             fallbackRootParams: undefined,
+            fallbackRouteParams: undefined,
             dataRouteRegex: normalizeRouteRegex(
               getNamedRouteRegex(dataRoute, {
                 prefixRouteKeys: true,

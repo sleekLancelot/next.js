@@ -154,7 +154,7 @@ import { createInitialRouterState } from '../../client/components/router-reducer
 import { createMutableActionQueue } from '../../client/components/app-router-instance'
 import { getRevalidateReason } from '../instrumentation/utils'
 import { PAGE_SEGMENT_KEY } from '../../shared/lib/segment'
-import type { FallbackRouteParams } from '../request/fallback-params'
+import type { OpaqueFallbackRouteParams } from '../request/fallback-params'
 import {
   prerenderAndAbortInSequentialTasksWithStages,
   processPrelude,
@@ -366,7 +366,7 @@ function createNotFoundLoaderTree(loaderTree: LoaderTree): LoaderTree {
 function makeGetDynamicParamFromSegment(
   params: { [key: string]: any },
   pagePath: string,
-  fallbackRouteParams: FallbackRouteParams | null
+  fallbackRouteParams: OpaqueFallbackRouteParams | null
 ): GetDynamicParamFromSegment {
   return function getDynamicParamFromSegment(
     // [slug] / [[slug]] / [...slug]
@@ -1455,7 +1455,7 @@ async function renderToHTMLOrFlightImpl(
   postponedState: PostponedState | null,
   serverComponentsHmrCache: ServerComponentsHmrCache | undefined,
   sharedContext: AppSharedContext,
-  fallbackRouteParams: FallbackRouteParams | null
+  fallbackRouteParams: OpaqueFallbackRouteParams | null
 ) {
   const isNotFoundPath = pagePath === '/404'
   if (isNotFoundPath) {
@@ -1938,7 +1938,7 @@ export type AppPageRender = (
   res: BaseNextResponse,
   pagePath: string,
   query: NextParsedUrlQuery,
-  fallbackRouteParams: FallbackRouteParams | null,
+  fallbackRouteParams: OpaqueFallbackRouteParams | null,
   renderOpts: RenderOpts,
   serverComponentsHmrCache: ServerComponentsHmrCache | undefined,
   isDevWarmup: boolean,
@@ -2083,7 +2083,7 @@ async function renderToStream(
   formState: any,
   postponedState: PostponedState | null,
   metadata: AppPageRenderResultMetadata,
-  devValidatingFallbackParams: FallbackRouteParams | null
+  devValidatingFallbackParams: OpaqueFallbackRouteParams | null
 ): Promise<ReadableStream<Uint8Array>> {
   const { assetPrefix, nonce, pagePath, renderOpts } = ctx
 
@@ -2592,7 +2592,7 @@ async function spawnDynamicValidationInDev(
   isNotFound: boolean,
   clientReferenceManifest: NonNullable<RenderOpts['clientReferenceManifest']>,
   requestStore: RequestStore,
-  fallbackRouteParams: FallbackRouteParams | null
+  fallbackRouteParams: OpaqueFallbackRouteParams | null
 ): Promise<void> {
   const {
     componentMod: ComponentMod,
@@ -3204,7 +3204,7 @@ async function prerenderToStream(
   ctx: AppRenderContext,
   metadata: AppPageRenderResultMetadata,
   tree: LoaderTree,
-  fallbackRouteParams: FallbackRouteParams | null
+  fallbackRouteParams: OpaqueFallbackRouteParams | null
 ): Promise<PrerenderToStreamResult> {
   // When prerendering formState is always null. We still include it
   // because some shared APIs expect a formState value and this is slightly

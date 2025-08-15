@@ -15,7 +15,10 @@ import type {
   MiddlewareManifest,
 } from './webpack/plugins/middleware-plugin'
 import type { WebpackLayerName } from '../lib/constants'
-import type { AppPageModule } from '../server/route-modules/app-page/module'
+import type {
+  AppPageModule,
+  AppPageRouteModule,
+} from '../server/route-modules/app-page/module'
 import type { RouteModule } from '../server/route-modules/route-module'
 import type { NextComponentType } from '../shared/lib/utils'
 
@@ -82,6 +85,7 @@ import { buildPagesStaticPaths } from './static-paths/pages'
 import type { PrerenderedRoute } from './static-paths/types'
 import type { CacheControl } from '../server/lib/cache-control'
 import { formatExpire, formatRevalidate } from './output/format'
+import type { AppRouteRouteModule } from '../server/route-modules/app-route/module'
 
 export type ROUTER_TYPE = 'pages' | 'app'
 
@@ -1152,7 +1156,13 @@ export async function isPageStatic({
 
         let segments
         try {
-          segments = await collectSegments(componentsResult)
+          segments = await collectSegments(
+            // We know this is an app page or app route module because we
+            // checked above that the page type is 'app'.
+            componentsResult.routeModule as
+              | AppPageRouteModule
+              | AppRouteRouteModule
+          )
         } catch (err) {
           throw new Error(`Failed to collect configuration for ${page}`, {
             cause: err,
