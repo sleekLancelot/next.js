@@ -450,9 +450,12 @@ function processMessage(
       return
     }
     case HMR_ACTIONS_SENT_TO_BROWSER.REACT_DEBUG_CHUNK: {
-      window.__NEXT_REACT_DEBUG_CHUNKS_CONTROLLER.enqueue(
-        Buffer.from(obj.base64EncodedChunk, 'base64')
-      )
+      const { requestId, base64EncodedChunk } = obj
+
+      window.__NEXT_REACT_DEBUG_CHUNKS_CONTROLLERS_BY_REQUEST_ID
+        ?.get(requestId)
+        ?.enqueue(Buffer.from(base64EncodedChunk, 'base64'))
+
       return
     }
     default: {
@@ -463,18 +466,16 @@ function processMessage(
 
 export default function HotReload({
   assetPrefix,
-  requestId,
   children,
   globalError,
 }: {
   assetPrefix: string
-  requestId: string
   children: ReactNode
   globalError: GlobalErrorState
 }) {
   useErrorHandler(dispatcher.onUnhandledError, dispatcher.onUnhandledRejection)
 
-  const webSocketRef = useWebsocket(assetPrefix, requestId)
+  const webSocketRef = useWebsocket(assetPrefix)
 
   useWebsocketPing(webSocketRef)
   const sendMessage = useSendMessage(webSocketRef)

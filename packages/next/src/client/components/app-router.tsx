@@ -195,12 +195,10 @@ function Head({
 function Router({
   actionQueue,
   assetPrefix,
-  requestId,
   globalError,
 }: {
   actionQueue: AppRouterActionQueue
   assetPrefix: string
-  requestId: string
   globalError: GlobalErrorState
 }) {
   const state = useActionQueue(actionQueue)
@@ -524,11 +522,7 @@ function Router({
       ).default
 
     content = (
-      <HotReloader
-        assetPrefix={assetPrefix}
-        globalError={globalError}
-        requestId={requestId}
-      >
+      <HotReloader assetPrefix={assetPrefix} globalError={globalError}>
         {content}
       </HotReloader>
     )
@@ -575,12 +569,10 @@ export default function AppRouter({
   actionQueue,
   globalErrorState,
   assetPrefix,
-  requestId,
 }: {
   actionQueue: AppRouterActionQueue
   globalErrorState: GlobalErrorState
   assetPrefix: string
-  requestId: string
 }) {
   useNavFailureHandler()
 
@@ -589,7 +581,6 @@ export default function AppRouter({
       actionQueue={actionQueue}
       assetPrefix={assetPrefix}
       globalError={globalErrorState}
-      requestId={requestId}
     />
   )
 
