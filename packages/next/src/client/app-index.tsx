@@ -53,6 +53,10 @@ type NextFlight = Omit<Array<FlightSegment>, 'push'> & {
 declare global {
   // If you're working in a browser environment
   interface Window {
+    /**
+     * requestId
+     */
+    __next_r: string
     __next_f: NextFlight
   }
 }
@@ -185,7 +189,7 @@ function ServerRoot({
       actionQueue={actionQueue}
       globalErrorState={initialRSCPayload.G}
       assetPrefix={initialRSCPayload.p}
-      requestId={initialRSCPayload.r}
+      requestId={self.__next_r}
     />
   )
 

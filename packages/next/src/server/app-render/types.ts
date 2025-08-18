@@ -328,8 +328,6 @@ export type InitialRSCPayload = {
   b: string
   /** assetPrefix */
   p: string
-  /** requestId */
-  r: string
   /** initialCanonicalUrlParts */
   c: string[]
   /** couldBeIntercepted */
