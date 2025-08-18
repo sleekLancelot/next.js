@@ -546,6 +546,7 @@ where
                         );
                         if self.request.is_match(prefix) {
                             return Some(AliasMatch {
+                                prefix: prefix.clone(),
                                 key,
                                 output: template.convert(),
                             });
@@ -601,7 +602,11 @@ where
                             remaining.strip_suffix_len(suffix.len());
 
                             let output = template.replace(&remaining);
-                            return Some(AliasMatch { key, output });
+                            return Some(AliasMatch {
+                                prefix: prefix.clone(),
+                                key,
+                                output,
+                            });
                         }
                     }
                 }
@@ -683,6 +688,7 @@ pub struct AliasMatch<'a, T>
 where
     T: AliasTemplate + Clone + 'a,
 {
+    pub prefix: Cow<'a, str>,
     pub key: &'a AliasKey,
     pub output: T::Output<'a>,
 }
@@ -952,6 +958,7 @@ mod test {
             ]))
             .collect::<Vec<_>>(),
             vec![super::AliasMatch {
+                prefix: "card/".into(),
                 key: &super::AliasKey::Wildcard { suffix: rcstr!("") },
                 output: Pattern::Concatenation(vec![
                     Pattern::Constant(rcstr!("src/cards/")),
@@ -967,6 +974,7 @@ mod test {
             ]))
             .collect::<Vec<_>>(),
             vec![super::AliasMatch {
+                prefix: "comp/".into(),
                 key: &super::AliasKey::Wildcard {
                     suffix: rcstr!("/x")
                 },
@@ -985,6 +993,7 @@ mod test {
             ]))
             .collect::<Vec<_>>(),
             vec![super::AliasMatch {
+                prefix: "head/".into(),
                 key: &super::AliasKey::Wildcard {
                     suffix: rcstr!("/x")
                 },
@@ -1028,6 +1037,7 @@ mod test {
             ]))
             .collect::<Vec<_>>(),
             vec![super::AliasMatch {
+                prefix: "bar-a".into(),
                 key: &AliasKey::Exact,
                 output: Pattern::Constant(rcstr!("src/bar/a"))
             }]
@@ -1040,10 +1050,12 @@ mod test {
             .collect::<Vec<_>>(),
             vec![
                 super::AliasMatch {
+                    prefix: "bar-b".into(),
                     key: &AliasKey::Exact,
                     output: Pattern::Constant(rcstr!("src/bar/b"))
                 },
                 super::AliasMatch {
+                    prefix: "bar-a".into(),
                     key: &AliasKey::Exact,
                     output: Pattern::Constant(rcstr!("src/bar/a"))
                 }
