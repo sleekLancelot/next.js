@@ -21,6 +21,7 @@ import type { InitialRSCPayload } from '../server/app-render/types'
 import { createInitialRouterState } from './components/router-reducer/create-initial-router-state'
 import { MissingSlotContext } from '../shared/lib/app-router-context.shared-runtime'
 import { setAppBuildId } from './app-build-id'
+import type { DebugChannelBrowser } from 'react-server-dom-webpack/client.browser'
 
 /// <reference types="react-dom/experimental" />
 
@@ -153,9 +154,22 @@ const readable = new ReadableStream({
   },
 })
 
+// TODO: Also needed for navigation and server action requests.
+let debugChannel: DebugChannelBrowser | undefined = undefined
+
+if (process.env.NODE_ENV !== 'production') {
+  debugChannel = {
+    readable: new ReadableStream({
+      start(controller) {
+        window.__NEXT_REACT_DEBUG_CHUNKS_CONTROLLER = controller
+      },
+    }),
+  }
+}
+
 const initialServerResponse = createFromReadableStream<InitialRSCPayload>(
   readable,
-  { callServer, findSourceMapURL }
+  { callServer, findSourceMapURL, debugChannel }
 )
 
 function ServerRoot({
@@ -171,6 +185,7 @@ function ServerRoot({
       actionQueue={actionQueue}
       globalErrorState={initialRSCPayload.G}
       assetPrefix={initialRSCPayload.p}
+      requestId={initialRSCPayload.r}
     />
   )
 

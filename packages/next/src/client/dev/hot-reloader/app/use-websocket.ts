@@ -3,7 +3,7 @@ import { GlobalLayoutRouterContext } from '../../../../shared/lib/app-router-con
 import { getSocketUrl } from '../get-socket-url'
 import type { TurbopackMsgToBrowser } from '../../../../server/dev/hot-reloader-types'
 
-export function useWebsocket(assetPrefix: string) {
+export function useWebsocket(assetPrefix: string, requestId: string) {
   const webSocketRef = useRef<WebSocket>(undefined)
 
   useEffect(() => {
@@ -13,8 +13,10 @@ export function useWebsocket(assetPrefix: string) {
 
     const url = getSocketUrl(assetPrefix)
 
-    webSocketRef.current = new window.WebSocket(`${url}/_next/webpack-hmr`)
-  }, [assetPrefix])
+    webSocketRef.current = new window.WebSocket(
+      `${url}/_next/webpack-hmr?id=${requestId}`
+    )
+  }, [assetPrefix, requestId])
 
   return webSocketRef
 }

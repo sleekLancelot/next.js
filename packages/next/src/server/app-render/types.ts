@@ -227,6 +227,7 @@ export interface RenderOptsPartial {
   isOnDemandRevalidate?: boolean
   isPossibleServerAction?: boolean
   setIsrStatus?: (key: string, value: boolean | null) => void
+  sendReactDebugChunk?: (requestId: string, chunk: Uint8Array) => void
   isRevalidate?: boolean
   nextExport?: boolean
   nextConfigOutput?: 'standalone' | 'export'
@@ -327,6 +328,8 @@ export type InitialRSCPayload = {
   b: string
   /** assetPrefix */
   p: string
+  /** requestId */
+  r: string
   /** initialCanonicalUrlParts */
   c: string[]
   /** couldBeIntercepted */
