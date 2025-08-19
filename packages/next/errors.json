@@ -781,9 +781,7 @@
   "780": "Invariant: failed to find parent dynamic route for notFound route %s",
   "781": "No LRU node to remove",
   "782": "Failed to find the root directory of the project. This is a bug in Next.js.",
-  "783": "Expected the WebSocket request to contain an `id` parameter.",
-  "784": "sendReactDebugChunk is not implemented yet for Webpack",
-  "785": "Expected a request ID to be defined for the document via self.__next_r.",
-  "786": "Expected a %s response header.",
-  "787": "Did not start HotReloaderWebpack."
+  "783": "Expected a request ID to be defined for the document via self.__next_r.",
+  "784": "Expected a %s response header.",
+  "785": "Did not start HotReloaderWebpack."
 }
