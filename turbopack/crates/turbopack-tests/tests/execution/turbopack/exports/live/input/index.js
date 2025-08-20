@@ -14,12 +14,30 @@ it('exported lets are live', () => {
 
 it('exported local bindings that are not mutated are not live', () => {
   // These should be bound to values, but we don't have the analysis yet
-  expectGetter('obviouslyneverMutated')
-  expectGetter('neverMutated')
+  expect(Object.getOwnPropertyDescriptor(ns, 'obviouslyneverMutated')).toEqual({
+    configurable: false,
+    enumerable: true,
+    value: 'obviouslyneverMutated',
+    writable: false,
+  })
+  expect(Object.getOwnPropertyDescriptor(ns, 'neverMutated')).toEqual({
+    configurable: false,
+    enumerable: true,
+    value: 'neverMutated',
+    writable: false,
+  })
 })
 
 it('exported bindings that are free vars are live', () => {
-  expectGetter('g')
+  const gDesc = Object.getOwnPropertyDescriptor(ns, 'g')
+  expect(gDesc).toEqual(
+    expect.objectContaining({
+      enumerable: true,
+      configurable: false,
+      set: undefined,
+    })
+  )
+  expect(gDesc).toHaveProperty('get')
 })
 
 function expectGetter(propName) {
