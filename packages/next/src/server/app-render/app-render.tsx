@@ -169,7 +169,10 @@ import {
 } from './app-render-prerender-utils'
 import { printDebugThrownValueForProspectiveRender } from './prospective-render-utils'
 import { scheduleInSequentialTasks } from './app-render-render-utils'
-import { waitAtLeastOneReactRenderTask } from '../../lib/scheduler'
+import {
+  scheduleOnNextTick,
+  waitAtLeastOneReactRenderTask,
+} from '../../lib/scheduler'
 import {
   workUnitAsyncStorage,
   type PrerenderStore,
@@ -2668,7 +2671,12 @@ function createDebugChannel(
       close() {
         // A null chunk signals to the client that no more chunks will be sent.
         sendReactDebugChunk(null, htmlRequestId, requestId)
-        readableController?.close()
+
+        // Don't close the stream before React properly closes its side.
+        // TODO: Is this a bug in React?
+        scheduleOnNextTick(() => {
+          readableController?.close()
+        })
       },
     }),
   }
