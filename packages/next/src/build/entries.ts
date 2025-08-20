@@ -70,7 +70,7 @@ import {
 } from '../lib/is-internal-component'
 import {
   isMetadataRouteFile,
-  isMetadataRouteStaticFile,
+  isMetadataStaticFile,
 } from '../lib/metadata/is-metadata-route'
 import { RouteKind } from '../server/route-kind'
 import { encodeToBase64 } from './webpack/loaders/utils'
@@ -580,7 +580,7 @@ export async function createPagesMapping({
       )
     )
 
-    if (pagesType === 'app' && isMetadataRouteStaticFile(pageKey)) {
+    if (pagesType === 'app' && isMetadataStaticFile(pageKey)) {
       // These files will be copied under ".next/static/metadata/" and served
       // as static files on requests.
       return
@@ -678,7 +678,7 @@ export async function copyMetadataStaticFiles({
   const promises = pagePaths.map<Promise<void>>(async (pagePath) => {
     const pageKey = getPageFromPath(pagePath, pageExtensions)
 
-    if (!isMetadataRouteStaticFile(pageKey)) {
+    if (!isMetadataStaticFile(pageKey)) {
       return
     }
 
