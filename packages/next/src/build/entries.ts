@@ -583,7 +583,7 @@ export async function createPagesMapping({
       )
     )
 
-    if (pagesType === 'app' && isMetadataStaticFileRoute(pageKey)) {
+    if (pagesType === 'app' && isMetadataStaticFileRoute(pagePath)) {
       // These files will be copied under ".next/static/metadata/" and served
       // as static files on requests.
       return
@@ -682,12 +682,11 @@ export async function copyMetadataStaticFiles({
   > = {}
 
   const promises = pagePaths.map<Promise<void>>(async (pagePath) => {
-    const pageKey = getPageFromPath(pagePath, pageExtensions)
-
-    if (!isMetadataStaticFileRoute(pageKey)) {
+    if (!isMetadataStaticFileRoute(pagePath)) {
       return
     }
 
+    const pageKey = getPageFromPath(pagePath, pageExtensions)
     const routePath = normalizeAppPath(normalizeMetadataRoute(pageKey))
     const targetPath = join(distDir, 'static', 'metadata', routePath)
 
