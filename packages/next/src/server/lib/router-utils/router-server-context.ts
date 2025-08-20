@@ -41,7 +41,7 @@ export type RouterServerContext = Record<
     // allow setting ISR status in dev
     setIsrStatus?: (key: string, value: boolean | null) => void
     sendReactDebugChunk?: (
-      chunk: Uint8Array,
+      chunk: Uint8Array | null,
       htmlRequestId: string,
       requestId: string
     ) => void

@@ -228,7 +228,7 @@ export interface RenderOptsPartial {
   isPossibleServerAction?: boolean
   setIsrStatus?: (key: string, value: boolean | null) => void
   sendReactDebugChunk?: (
-    chunk: Uint8Array,
+    chunk: Uint8Array | null,
     htmlRequestId: string,
     requestId: string
   ) => void
