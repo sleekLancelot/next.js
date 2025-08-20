@@ -203,7 +203,11 @@ export function generateLinkTypesFile(
   // Generate serialized static and dynamic routes for the internal namespace
   const allRoutes = {
     ...routesManifest.appRoutes,
+    // Allow linking to App Route Handlers (e.g. `/logout/route.ts`)
+    ...routesManifest.appRouteHandlerRoutes,
     ...routesManifest.pageRoutes,
+    // Allow linking to Pages Router API routes (e.g. `/api/*`)
+    ...routesManifest.pageApiRoutes,
     ...routesManifest.redirectRoutes,
     ...routesManifest.rewriteRoutes,
   }
