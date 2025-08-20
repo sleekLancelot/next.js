@@ -2537,6 +2537,12 @@ async function renderToStream(
       {
         filterStackFrame,
         onError: serverComponentsErrorHandler,
+        debugChannel: createDebugChannel(
+          sendReactDebugChunk,
+          htmlRequestId,
+          requestId,
+          (stream) => (reactDebugStream = stream)
+        ),
       }
     )
 
